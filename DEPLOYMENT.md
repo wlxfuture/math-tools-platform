@@ -52,10 +52,10 @@ wrangler login
 cd "e:\我的坚果云\html\math tool"
 
 # Create production KV namespace
-wrangler kv:namespace create STATS
+wrangler kv namespace create STATS
 
 # Create preview namespace for local testing
-wrangler kv:namespace create STATS --preview
+wrangler kv namespace create STATS --preview
 ```
 
 **Output will look like:**
@@ -108,10 +108,10 @@ Done! Your site is now live 🎉
 - [ ] Install Node.js 18+
 - [ ] Install Wrangler CLI: `npm install -g wrangler`
 - [ ] Run: `wrangler login`
-- [ ] Create KV namespaces: `wrangler kv:namespace create STATS` (twice)
+- [ ] Create KV namespaces: `wrangler kv namespace create STATS` (twice)
 - [ ] Update `wrangler.toml` with KV IDs
-- [ ] Test locally: `wrangler dev`
-- [ ] Deploy: `wrangler deploy`
+- [ ] Test locally: `wrangler pages dev public --local`
+- [ ] Deploy: `wrangler pages deploy public --project-name math-tools-platform`
 - [ ] Deploy Pages: `wrangler pages deploy public`
 - [ ] Verify dashboard loads
 - [ ] Test each tool (quantile, statistics, matrix, linear-transform)
@@ -471,7 +471,7 @@ Error: KV Namespace not found
 ```
 **Solution:**
 - Verify namespace IDs in `wrangler.toml`
-- Run `wrangler kv:namespace list` to check namespaces
+- Run `wrangler kv namespace list` to check namespaces
 - Ensure IDs are inside `[[kv_namespaces]]` section
 
 ### Problem: "404 Not Found" on API calls
@@ -565,8 +565,8 @@ wrangler pages deploy public          # Deploy Pages
 npm run deploy                        # Deploy both
 
 # KV Management
-wrangler kv:namespace create STATS    # Create namespace
-wrangler kv:namespace list            # List namespaces
+wrangler kv namespace create STATS    # Create namespace
+wrangler kv namespace list            # List namespaces
 wrangler kv:key list --namespace-id=ID  # List keys
 wrangler kv:key get --namespace-id=ID toolId  # Get value
 

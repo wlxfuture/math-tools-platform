@@ -411,8 +411,8 @@ npm install -g wrangler
 wrangler login
 
 # KV Setup
-wrangler kv:namespace create STATS
-wrangler kv:namespace create STATS --preview
+wrangler kv namespace create STATS
+wrangler kv namespace create STATS --preview
 
 # Development
 wrangler dev                         # Start local server

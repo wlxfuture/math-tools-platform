@@ -115,10 +115,10 @@ GET /api/hot?tool=quantile
 
 ```bash
 # 创建生产环境命名空间
-wrangler kv:namespace create STATS
+wrangler kv namespace create STATS
 
 # 创建预览环境命名空间
-wrangler kv:namespace create STATS --preview
+wrangler kv namespace create STATS --preview
 ```
 
 这两条命令会输出命名空间 ID，后面需要填写到 `wrangler.toml`。
@@ -153,14 +153,20 @@ wrangler pages dev public --local
 wrangler pages deploy public --project-name math-tools-platform
 ```
 
-或者使用 Cloudflare Git 集成：
-1. 将代码推送到 GitHub
-2. 在 Cloudflare 仪表盘打开 Pages → 创建项目
-3. 连接 GitHub 仓库
-4. 构建命令填写 `npm run build`（静态项目也可留空）
-5. 发布目录填写 `public`
+### 第五步：GitHub 自动部署（推荐）
 
-### 第五步：可选自定义域名
+如果你使用 GitHub 托管仓库，可直接启用 Actions 自动部署：
+
+1. 将项目推送到 GitHub
+2. 创建仓库 Secrets：
+   - `CLOUDFLARE_API_TOKEN`
+   - `CLOUDFLARE_ACCOUNT_ID`
+3. 当前仓库中已有 `.github/workflows/cloudflare-pages-deploy.yml`
+4. 每次推送到 `main` 分支后，Actions 会自动部署 `public/` 文件夹
+
+> 你也可以直接在 GitHub 仪表盘中启用 Cloudflare Pages 的 Git 集成。
+
+### 第六步：可选自定义域名
 
 在 Cloudflare 仪表盘中：
 1. 进入 Pages 项目设置

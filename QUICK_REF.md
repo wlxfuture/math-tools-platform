@@ -22,8 +22,8 @@
 # Setup
 npm install -g wrangler
 wrangler login
-wrangler kv:namespace create STATS
-wrangler kv:namespace create STATS --preview
+wrangler kv namespace create STATS
+wrangler kv namespace create STATS --preview
 
 # Development
 wrangler pages dev public --local   # Run locally

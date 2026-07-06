@@ -1,5 +1,4 @@
 name = "math-tools-platform"
-type = "javascript"
 account_id = "YOUR_ACCOUNT_ID"
 compatibility_date = "2026-07-06"
 
@@ -16,4 +15,3 @@ kv_namespaces = [
 
 [build]
 command = ""
-upload = { format = "modules" }

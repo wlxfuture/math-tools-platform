@@ -109,8 +109,8 @@ wrangler login
 ### 2️⃣ Create KV Namespaces
 ```bash
 cd "e:\我的坚果云\html\math tool"
-wrangler kv:namespace create STATS
-wrangler kv:namespace create STATS --preview
+wrangler kv namespace create STATS
+wrangler kv namespace create STATS --preview
 ```
 
 ### 3️⃣ Update wrangler.toml
