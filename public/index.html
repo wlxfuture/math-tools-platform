@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Math Tools Platform</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <span class="logo">📐</span>
+      <h1 class="header-title">Math Tools Platform</h1>
+    </div>
+    <div class="header-actions">
+      <button class="theme-toggle" title="Toggle theme">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+        Choose a tool to get started with powerful mathematical calculations
+      </p>
+
+      <div class="tools-grid">
+        <!-- Quantile Calculator -->
+        <a href="/tools/quantile.html" class="tool-card" data-track-id="quantile">
+          <div class="tool-icon">📊</div>
+          <div class="tool-name">Quantile Calculator</div>
+          <div class="tool-stats">
+            <span class="click-count">-</span>
+            <span class="stats-label">clicks</span>
+          </div>
+        </a>
+
+        <!-- Statistics Calculator -->
+        <a href="/tools/statistics.html" class="tool-card" data-track-id="statistics">
+          <div class="tool-icon">📈</div>
+          <div class="tool-name">Statistics Calculator</div>
+          <div class="tool-stats">
+            <span class="click-count">-</span>
+            <span class="stats-label">clicks</span>
+          </div>
+        </a>
+
+        <!-- Matrix Calculator -->
+        <a href="/tools/matrix.html" class="tool-card" data-track-id="matrix">
+          <div class="tool-icon">⬜</div>
+          <div class="tool-name">Matrix Calculator</div>
+          <div class="tool-stats">
+            <span class="click-count">-</span>
+            <span class="stats-label">clicks</span>
+          </div>
+        </a>
+
+        <!-- Linear Transform Visualizer -->
+        <a href="/tools/linear-transform.html" class="tool-card" data-track-id="linear-transform">
+          <div class="tool-icon">↗️</div>
+          <div class="tool-name">Linear Transform Visualizer</div>
+          <div class="tool-stats">
+            <span class="click-count">-</span>
+            <span class="stats-label">clicks</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <script src="/assets/theme.js"></script>
+  <script src="/assets/tracker.js"></script>
+  <script>
+    // Load stats on page load
+    document.addEventListener('DOMContentLoaded', async () => {
+      const toolIds = ['quantile', 'statistics', 'matrix', 'linear-transform'];
+      const stats = await tracker.getMultipleStats(toolIds);
+
+      const cards = document.querySelectorAll('.tool-card');
+      cards.forEach(card => {
+        const toolId = card.getAttribute('data-track-id');
+        const stat = stats[toolId];
+        const clickCount = card.querySelector('.click-count');
+        
+        if (stat && stat.clicks !== undefined) {
+          clickCount.textContent = AnalyticsTracker.formatCount(stat.clicks);
+        }
+      });
+    });
+  </script>
+</body>
+</html>

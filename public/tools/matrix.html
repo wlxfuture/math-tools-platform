@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Matrix Calculator - Math Tools</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+  <style>
+    .matrix-input {
+      display: grid;
+      grid-template-columns: repeat(3, 60px);
+      gap: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .matrix-input input {
+      padding: 0.5rem;
+      text-align: center;
+    }
+
+    .matrix-display {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .buttons-group {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+
+    .buttons-group button {
+      padding: 0.5rem 1rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <span class="logo">📐</span>
+      <h1 class="header-title">Math Tools Platform</h1>
+    </div>
+    <div class="header-actions">
+      <button class="theme-toggle" title="Toggle theme">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <a href="/" class="back-link">← Back to Dashboard</a>
+
+      <div class="tool-header">
+        <div class="tool-header-icon">⬜</div>
+        <div class="tool-header-info">
+          <h1>Matrix Calculator</h1>
+          <p>Perform basic matrix operations</p>
+        </div>
+      </div>
+
+      <div style="max-width: 600px;">
+        <div class="form-group">
+          <label>Matrix A (3x3)</label>
+          <div class="matrix-input" id="matrixA">
+            <input type="number" value="1" placeholder="a11">
+            <input type="number" value="0" placeholder="a12">
+            <input type="number" value="0" placeholder="a13">
+            <input type="number" value="0" placeholder="a21">
+            <input type="number" value="1" placeholder="a22">
+            <input type="number" value="0" placeholder="a23">
+            <input type="number" value="0" placeholder="a31">
+            <input type="number" value="0" placeholder="a32">
+            <input type="number" value="1" placeholder="a33">
+          </div>
+        </div>
+
+        <div class="buttons-group">
+          <button onclick="calculateDeterminant()">Determinant</button>
+          <button onclick="calculateTrace()">Trace</button>
+          <button onclick="displayMatrix()">Display</button>
+        </div>
+
+        <div id="results" class="results" style="display: none;">
+          <h3>Results</h3>
+          <div class="result-item">
+            <span class="result-label">Determinant:</span>
+            <span class="result-value" id="result-det">-</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Trace:</span>
+            <span class="result-value" id="result-trace">-</span>
+          </div>
+        </div>
+
+        <div id="matrix-display" class="matrix-display" style="display: none;"></div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/assets/theme.js"></script>
+  <script src="/assets/tracker.js"></script>
+  <script>
+    function getMatrix() {
+      const inputs = document.querySelectorAll('#matrixA input');
+      const matrix = [];
+      for (let i = 0; i < 3; i++) {
+        matrix[i] = [];
+        for (let j = 0; j < 3; j++) {
+          matrix[i][j] = parseFloat(inputs[i * 3 + j].value) || 0;
+        }
+      }
+      return matrix;
+    }
+
+    function calculateDeterminant() {
+      const m = getMatrix();
+      
+      // 3x3 determinant formula
+      const det = 
+        m[0][0] * (m[1][1] * m[2][2] - m[1][2] * m[2][1]) -
+        m[0][1] * (m[1][0] * m[2][2] - m[1][2] * m[2][0]) +
+        m[0][2] * (m[1][0] * m[2][1] - m[1][1] * m[2][0]);
+
+      const trace = m[0][0] + m[1][1] + m[2][2];
+
+      document.getElementById('result-det').textContent = det.toFixed(4);
+      document.getElementById('result-trace').textContent = trace.toFixed(4);
+      document.getElementById('results').style.display = 'block';
+
+      tracker.trackClick('matrix');
+    }
+
+    function calculateTrace() {
+      const m = getMatrix();
+      const trace = m[0][0] + m[1][1] + m[2][2];
+      document.getElementById('result-trace').textContent = trace.toFixed(4);
+      document.getElementById('results').style.display = 'block';
+
+      tracker.trackClick('matrix');
+    }
+
+    function displayMatrix() {
+      const m = getMatrix();
+      let display = '';
+      for (let i = 0; i < 3; i++) {
+        display += '[ ';
+        for (let j = 0; j < 3; j++) {
+          display += m[i][j].toFixed(2).padStart(7);
+          if (j < 2) display += '  ';
+        }
+        display += ' ]\n';
+      }
+
+      document.getElementById('matrix-display').textContent = display;
+      document.getElementById('matrix-display').style.display = 'block';
+
+      tracker.trackClick('matrix');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linear Transform Visualizer - Math Tools</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+  <style>
+    #canvas {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin: 1rem 0;
+      display: block;
+      width: 100%;
+      max-width: 500px;
+      height: 500px;
+    }
+
+    .matrix-input {
+      display: grid;
+      grid-template-columns: repeat(2, 80px);
+      gap: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .matrix-input input {
+      padding: 0.5rem;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <span class="logo">📐</span>
+      <h1 class="header-title">Math Tools Platform</h1>
+    </div>
+    <div class="header-actions">
+      <button class="theme-toggle" title="Toggle theme">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <a href="/" class="back-link">← Back to Dashboard</a>
+
+      <div class="tool-header">
+        <div class="tool-header-icon">↗️</div>
+        <div class="tool-header-info">
+          <h1>Linear Transform Visualizer</h1>
+          <p>Visualize 2D linear transformations with custom matrices</p>
+        </div>
+      </div>
+
+      <div style="max-width: 600px;">
+        <div class="form-group">
+          <label>Transformation Matrix (2x2)</label>
+          <div class="matrix-input" id="matrix">
+            <input type="number" value="1" placeholder="a">
+            <input type="number" value="0" placeholder="b">
+            <input type="number" value="0" placeholder="c">
+            <input type="number" value="1" placeholder="d">
+          </div>
+        </div>
+
+        <button onclick="visualize()">Visualize Transform</button>
+
+        <canvas id="canvas"></canvas>
+
+        <div id="results" class="results" style="display: none;">
+          <h3>Transform Info</h3>
+          <div class="result-item">
+            <span class="result-label">Determinant:</span>
+            <span class="result-value" id="result-det">-</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Scale Factor:</span>
+            <span class="result-value" id="result-scale">-</span>
+          </div>
+        </div>
+
+        <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 1rem;">
+          <strong>Legend:</strong> Blue = original unit vectors, Red = transformed vectors
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <script src="/assets/theme.js"></script>
+  <script src="/assets/tracker.js"></script>
+  <script>
+    function getMatrix() {
+      const inputs = document.querySelectorAll('#matrix input');
+      return [
+        [parseFloat(inputs[0].value) || 1, parseFloat(inputs[1].value) || 0],
+        [parseFloat(inputs[2].value) || 0, parseFloat(inputs[3].value) || 1]
+      ];
+    }
+
+    function visualize() {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+      const m = getMatrix();
+
+      // Set actual canvas size
+      canvas.width = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const scale = 60;
+
+      // Clear canvas
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg-secondary').trim();
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw grid
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--border-color').trim();
+      ctx.lineWidth = 0.5;
+      for (let i = -5; i <= 5; i++) {
+        ctx.beginPath();
+        ctx.moveTo(centerX + i * scale, 0);
+        ctx.lineTo(centerX + i * scale, canvas.height);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(0, centerY + i * scale);
+        ctx.lineTo(canvas.width, centerY + i * scale);
+        ctx.stroke();
+      }
+
+      // Draw axes
+      ctx.strokeStyle = getComputedStyle(document.documentElement).getPropertyValue('--text-secondary').trim();
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(0, centerY);
+      ctx.lineTo(canvas.width, centerY);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(centerX, 0);
+      ctx.lineTo(centerX, canvas.height);
+      ctx.stroke();
+
+      // Draw original unit vectors (blue)
+      ctx.strokeStyle = '#4a9eff';
+      ctx.lineWidth = 2;
+
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(centerX + scale, centerY);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(centerX, centerY - scale);
+      ctx.stroke();
+
+      // Draw transformed vectors (red)
+      ctx.strokeStyle = '#ff4a4a';
+      const v1 = [m[0][0], m[1][0]];
+      const v2 = [m[0][1], m[1][1]];
+
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(centerX + v1[0] * scale, centerY - v1[1] * scale);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(centerX, centerY);
+      ctx.lineTo(centerX + v2[0] * scale, centerY - v2[1] * scale);
+      ctx.stroke();
+
+      // Draw arrows
+      function drawArrow(fromX, fromY, toX, toY, color) {
+        const headlen = 15;
+        const angle = Math.atan2(toY - fromY, toX - fromX);
+
+        ctx.strokeStyle = color;
+        ctx.fillStyle = color;
+
+        ctx.beginPath();
+        ctx.moveTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
+        ctx.lineTo(toX, toY);
+        ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
+        ctx.stroke();
+      }
+
+      drawArrow(centerX, centerY, centerX + scale, centerY, '#4a9eff');
+      drawArrow(centerX, centerY, centerX, centerY - scale, '#4a9eff');
+      drawArrow(centerX, centerY, centerX + v1[0] * scale, centerY - v1[1] * scale, '#ff4a4a');
+      drawArrow(centerX, centerY, centerX + v2[0] * scale, centerY - v2[1] * scale, '#ff4a4a');
+
+      // Calculate determinant
+      const det = m[0][0] * m[1][1] - m[0][1] * m[1][0];
+      const scaleFactor = Math.abs(det);
+
+      document.getElementById('result-det').textContent = det.toFixed(4);
+      document.getElementById('result-scale').textContent = scaleFactor.toFixed(4);
+      document.getElementById('results').style.display = 'block';
+
+      tracker.trackClick('linear-transform');
+    }
+
+    // Visualize on load
+    window.addEventListener('load', () => {
+      visualize();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics Calculator - Math Tools</title>
+  <link rel="stylesheet" href="/assets/styles.css">
+</head>
+<body>
+  <header>
+    <div class="header-content">
+      <span class="logo">📐</span>
+      <h1 class="header-title">Math Tools Platform</h1>
+    </div>
+    <div class="header-actions">
+      <button class="theme-toggle" title="Toggle theme">🌙</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <a href="/" class="back-link">← Back to Dashboard</a>
+
+      <div class="tool-header">
+        <div class="tool-header-icon">📈</div>
+        <div class="tool-header-info">
+          <h1>Statistics Calculator</h1>
+          <p>Calculate mean, median, standard deviation, and more</p>
+        </div>
+      </div>
+
+      <div style="max-width: 600px;">
+        <div class="form-group">
+          <label for="data-input">Data values (comma-separated)</label>
+          <input 
+            type="text" 
+            id="data-input" 
+            placeholder="1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
+            value="1, 2, 3, 4, 5, 6, 7, 8, 9, 10"
+          >
+        </div>
+
+        <button onclick="calculateStats()">Calculate Statistics</button>
+
+        <div id="results" class="results" style="display: none;">
+          <h3>Results</h3>
+          <div class="result-item">
+            <span class="result-label">Count:</span>
+            <span class="result-value" id="result-count">-</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Sum:</span>
+            <span class="result-value" id="result-sum">-</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Mean:</span>
+            <span class="result-value" id="result-mean">-</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Median:</span>
+            <span class="result-value" id="result-median">-</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Std Dev:</span>
+            <span class="result-value" id="result-stddev">-</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Variance:</span>
+            <span class="result-value" id="result-variance">-</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Min:</span>
+            <span class="result-value" id="result-min">-</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Max:</span>
+            <span class="result-value" id="result-max">-</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Range:</span>
+            <span class="result-value" id="result-range">-</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="/assets/theme.js"></script>
+  <script src="/assets/tracker.js"></script>
+  <script>
+    function calculateStats() {
+      const dataInput = document.getElementById('data-input').value;
+      const data = dataInput
+        .split(',')
+        .map(v => parseFloat(v.trim()))
+        .filter(v => !isNaN(v))
+        .sort((a, b) => a - b);
+
+      if (data.length === 0) {
+        alert('Please enter valid numeric data');
+        return;
+      }
+
+      // Calculate statistics
+      const count = data.length;
+      const sum = data.reduce((a, b) => a + b, 0);
+      const mean = sum / count;
+      
+      const median = count % 2 === 0 
+        ? (data[count / 2 - 1] + data[count / 2]) / 2 
+        : data[Math.floor(count / 2)];
+
+      const variance = data.reduce((sq, n) => sq + Math.pow(n - mean, 2), 0) / count;
+      const stddev = Math.sqrt(variance);
+      const min = data[0];
+      const max = data[count - 1];
+      const range = max - min;
+
+      // Display results
+      document.getElementById('result-count').textContent = count;
+      document.getElementById('result-sum').textContent = sum.toFixed(4);
+      document.getElementById('result-mean').textContent = mean.toFixed(4);
+      document.getElementById('result-median').textContent = median.toFixed(4);
+      document.getElementById('result-stddev').textContent = stddev.toFixed(4);
+      document.getElementById('result-variance').textContent = variance.toFixed(4);
+      document.getElementById('result-min').textContent = min.toFixed(4);
+      document.getElementById('result-max').textContent = max.toFixed(4);
+      document.getElementById('result-range').textContent = range.toFixed(4);
+      document.getElementById('results').style.display = 'block';
+
+      // Track usage
+      tracker.trackClick('statistics');
+    }
+
+    // Allow Enter key to calculate
+    document.getElementById('data-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') calculateStats();
+    });
+  </script>
+</body>
+</html>
